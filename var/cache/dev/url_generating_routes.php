@@ -4,6 +4,10 @@
 
 return [
     '_preview_error' => [['code', '_format'], ['_controller' => 'error_controller::preview', '_format' => 'html'], ['code' => '\\d+'], [['variable', '.', '[^/]++', '_format', true], ['variable', '/', '\\d+', 'code', true], ['text', '/_error']], [], [], []],
-    'api_app_companies' => [[], ['_controller' => 'App\\Controller\\CompanyController::getCompanies'], [], [['text', '/api/companies']], [], [], []],
+    'api_get_companies' => [[], ['_controller' => 'App\\Controller\\CompanyController::getCompanies'], [], [['text', '/api/companies']], [], [], []],
+    'api_get_company' => [['id'], ['_controller' => 'App\\Controller\\CompanyController::getCompany'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/company']], [], [], []],
+    'api_create_company' => [[], ['_controller' => 'App\\Controller\\CompanyController::createCompany'], [], [['text', '/api/company/create']], [], [], []],
     'App\Controller\CompanyController::getCompanies' => [[], ['_controller' => 'App\\Controller\\CompanyController::getCompanies'], [], [['text', '/api/companies']], [], [], []],
+    'App\Controller\CompanyController::getCompany' => [['id'], ['_controller' => 'App\\Controller\\CompanyController::getCompany'], [], [['variable', '/', '[^/]++', 'id', true], ['text', '/api/company']], [], [], []],
+    'App\Controller\CompanyController::createCompany' => [[], ['_controller' => 'App\\Controller\\CompanyController::createCompany'], [], [['text', '/api/company/create']], [], [], []],
 ];
