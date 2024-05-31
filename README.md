@@ -1,2 +1,2 @@
-# api_docker_market
-API REST - PHP - SYMFONY - DOCKER - MYSQL - NGINX - MARKET
+# api_market
+API REST MARKET
