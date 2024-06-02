@@ -30,7 +30,12 @@ class Companies
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Groups(['company:read'])]
-    private ?\DateTimeInterface $discharge_date = null;
+    private ?\DateTime $discharge_date = null;
+
+    public function __construct()
+    {
+        $this->discharge_date = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -80,12 +85,12 @@ class Companies
         return $this;
     }
 
-    public function getDischargeDate(): ?\DateTimeInterface
+    public function getDischargeDate(): ?\DateTime
     {
         return $this->discharge_date;
     }
 
-    public function setDischargeDate(\DateTimeInterface $discharge_date): static
+    public function setDischargeDate(\DateTime $discharge_date): static
     {
         $this->discharge_date = $discharge_date;
 
