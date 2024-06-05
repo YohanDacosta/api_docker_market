@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Companies;
+use App\Entity\Products;
 use App\Form\Type\CompanyType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -11,16 +12,28 @@ use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Serializer\Serializer;
 use phpDocumentor\Reflection\PseudoTypes\True_;
 use PHPUnit\TextUI\XmlConfiguration\Group;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+
+use function PHPSTORM_META\type;
 
 #[Route('/api', name:'api_')]
 class CompanyController extends AbstractFOSRestController
 {
     private $em;
     private $serializer;
+
+    private function getFormErrors(FormInterface $form)
+    {
+        $errors = [];
+        foreach ($form->getErrors(true) as $error) {
+            $errors[] = $error->getMessage();
+        }
+        return $errors;
+    }
 
     public function __construct(EntityManagerInterface $em, Serializer $serializer)
     {
@@ -53,29 +66,43 @@ class CompanyController extends AbstractFOSRestController
         return new JsonResponse($data, Response::HTTP_OK, [], true);
     }
 
-    #[Route('/company/create', name: 'create_company', methods: 'POST')]
+    #[Route('/company-create', name: 'create_company', methods: 'POST')]
     public function createCompany(Request $request)
     {
         $company = new Companies();
         $form = $this->createForm(CompanyType::class, $company);
         $data = json_decode($request->getContent(), true);
+
         $form->submit($data);
+
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->em->persist($company);
-            $this->em->flush();
+            $this->em->flush();  
 
             $context = new Context();
-            $context->getGroups(['groups' => 'company:read']);
+            $context->setGroups(['groups' => 'company:write']);
             $data = $this->serializer->serialize($company, 'json', $context);
-            return new JsonResponse($data, Response::HTTP_CREATED, [], True);
+            return new JsonResponse($data, Response::HTTP_CREATED, [], true);
         }
+        $errors = $this->getFormErrors($form);
 
-        $error = [];
-        foreach ($form->getErrors(true) as $error){
-            $error[] = $error->getMessage();
-        }
+        return new JsonResponse(['errors' => $errors], Response::HTTP_BAD_REQUEST);
+    }
 
-        return new JsonResponse(['errors' => $error], Response::HTTP_BAD_REQUEST);
+    #[Route('/company-update/{id}', name: 'update_company', methods: 'POST')]
+    public function updateCompany(int $id)
+    {
+        $company = $this->em->getRepository(Companies::class)->findBy(['id' => $id]);
+
+        // if (!$company) {
+        //     return new JsonResponse(['errors' = true], method)
+        // }
+    }
+
+    #[Route('/company-delete/{id}', name: 'company_delete', methods: 'POST')]
+    public function deleteCompany(int $id)
+    {
+        $company = $this->em->getRepository(Companies::class)->findBy(['id' => $id]);
     }
 }

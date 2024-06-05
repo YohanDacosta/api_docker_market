@@ -5,9 +5,14 @@ namespace App\Entity;
 use App\Repository\CompaniesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CompaniesRepository::class)]
+#[UniqueEntity(    
+    fields: ['cif'],
+    message: 'This {{ value }} is already exists.'
+)]
 class Companies
 {
     #[ORM\Id]
@@ -20,17 +25,16 @@ class Companies
     #[Groups(['company:read', 'company:write'])]
     private ?int $type = null;
 
-    #[ORM\Column(length: 25)]
+    #[ORM\Column(length: 25, unique: true)]
     #[Groups(['company:read', 'company:write'])]
     private ?string $cif = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['company:read', 'company:write'])]
+    #[Groups(['company:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['company:read'])]
-    private ?\DateTime $discharge_date = null;
+    private ?\DateTimeInterface $discharge_date = null;
 
     public function __construct()
     {
@@ -40,13 +44,6 @@ class Companies
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getType(): ?int
@@ -85,12 +82,12 @@ class Companies
         return $this;
     }
 
-    public function getDischargeDate(): ?\DateTime
+    public function getDischargeDate(): ?\DateTimeInterface
     {
         return $this->discharge_date;
     }
 
-    public function setDischargeDate(\DateTime $discharge_date): static
+    public function setDischargeDate(\DateTimeInterface $discharge_date): static
     {
         $this->discharge_date = $discharge_date;
 

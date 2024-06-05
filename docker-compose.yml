@@ -31,6 +31,7 @@ services:
     environment:
       APP_ENV: dev
       APP_SECRET: d5d95fcd53207a4001dd388251e5bd7b
+      DATABASE_URL: mysql://root:admin@db:3306/db_market?serverVersion=10.9.3-MariaDB
     volumes:
       - ./:/var/www/html/
     networks:

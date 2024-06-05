@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit60e64d2f8810eeda58401489cf26da98
+class ComposerStaticInit4db2826a60cd4b71eee9c3cd5d253d54
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
@@ -38,12 +38,14 @@ class ComposerStaticInit60e64d2f8810eeda58401489cf26da98
             'Symfony\\Polyfill\\Intl\\Icu\\' => 26,
             'Symfony\\Polyfill\\Intl\\Grapheme\\' => 31,
             'Symfony\\Flex\\' => 13,
+            'Symfony\\Contracts\\Translation\\' => 30,
             'Symfony\\Contracts\\Service\\' => 26,
             'Symfony\\Contracts\\EventDispatcher\\' => 34,
             'Symfony\\Contracts\\Cache\\' => 24,
             'Symfony\\Component\\Yaml\\' => 23,
             'Symfony\\Component\\VarExporter\\' => 30,
             'Symfony\\Component\\VarDumper\\' => 28,
+            'Symfony\\Component\\Validator\\' => 28,
             'Symfony\\Component\\String\\' => 25,
             'Symfony\\Component\\Stopwatch\\' => 28,
             'Symfony\\Component\\Serializer\\' => 29,
@@ -160,6 +162,10 @@ class ComposerStaticInit60e64d2f8810eeda58401489cf26da98
         array (
             0 => __DIR__ . '/..' . '/symfony/flex/src',
         ),
+        'Symfony\\Contracts\\Translation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/translation-contracts',
+        ),
         'Symfony\\Contracts\\Service\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/service-contracts',
@@ -183,6 +189,10 @@ class ComposerStaticInit60e64d2f8810eeda58401489cf26da98
         'Symfony\\Component\\VarDumper\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/var-dumper',
+        ),
+        'Symfony\\Component\\Validator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/validator',
         ),
         'Symfony\\Component\\String\\' => 
         array (
@@ -1073,10 +1083,10 @@ class ComposerStaticInit60e64d2f8810eeda58401489cf26da98
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit60e64d2f8810eeda58401489cf26da98::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit60e64d2f8810eeda58401489cf26da98::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit60e64d2f8810eeda58401489cf26da98::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit60e64d2f8810eeda58401489cf26da98::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4db2826a60cd4b71eee9c3cd5d253d54::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4db2826a60cd4b71eee9c3cd5d253d54::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit4db2826a60cd4b71eee9c3cd5d253d54::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit4db2826a60cd4b71eee9c3cd5d253d54::$classMap;
 
         }, null, ClassLoader::class);
     }
