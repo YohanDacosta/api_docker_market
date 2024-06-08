@@ -15,6 +15,15 @@ class CompanyType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('id', IntegerType::class, [
+            'required'   => $options['required'],
+            'constraints'=> [
+                new Assert\Type(
+                    type: 'integer',
+                    message: 'The value {{ value }} is not a valid {{ type }}.',
+                )
+            ]
+        ])
             ->add('type', IntegerType::class, [
             'required'   => true,
             'constraints'=> [

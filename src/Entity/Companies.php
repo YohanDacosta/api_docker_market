@@ -34,11 +34,16 @@ class Companies
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $discharge_date = null;
+    #[Groups(['company:read'])]
+    private ?\DateTimeInterface $created_at = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updated_at= null;
 
     public function __construct()
     {
-        $this->discharge_date = new \DateTime();
+        $this->created_at = new \DateTime();
+        $this->updated_at = new \DateTime();
     }
 
     public function getId(): ?int
@@ -82,14 +87,26 @@ class Companies
         return $this;
     }
 
-    public function getDischargeDate(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeInterface
     {
-        return $this->discharge_date;
+        return $this->created_at;
     }
 
-    public function setDischargeDate(\DateTimeInterface $discharge_date): static
+    public function setCreatedAt(\DateTimeInterface $created_at): static
     {
-        $this->discharge_date = $discharge_date;
+        $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeInterface $updated_at): static
+    {
+        $this->updated_at = $updated_at;
 
         return $this;
     }
