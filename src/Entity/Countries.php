@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CountriesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CountriesRepository::class)]
 class Countries
@@ -11,12 +12,15 @@ class Countries
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['country:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 2)]
+    #[Groups(['country:read', 'country:write'])]
     private ?string $iso = null;
 
     #[ORM\Column(length: 80)]
+    #[Groups(['country:read', 'country:write'])]
     private ?string $name = null;
 
     public function getId(): ?int
