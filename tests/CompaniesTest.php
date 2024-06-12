@@ -4,10 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Companies;
 use App\Form\Type\CompanyType;
-use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\Form\Test\TypeTestCase;
 
 class CompaniesTest extends KernelTestCase
@@ -16,7 +13,7 @@ class CompaniesTest extends KernelTestCase
 
     protected function setUp(): void {
         self::bootKernel();
-        $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();;
+        $this->em = static::$kernel->getContainer()->get('doctrine')->getManager();
     }
 
     # GET ALL COMPANIES
@@ -31,14 +28,15 @@ class CompaniesTest extends KernelTestCase
         }
     }
 
-    // # GET COMPANY BY ID
-    // public function testGetCompany(): void {
-    //     $company = $this->em->getRepository(Companies::class)->findBy(['id' => 3]);
-    //     $this->assertNotEmpty($company);
-    //     $this->assertIsArray($company);
-    //     $this->assertInstanceOf(Companies::class, $company[0]);
-    //     $this->assertEquals($company[0]->getId(), 3);
-    // }
+    # GET COMPANY BY ID
+    public function testGetCompany(): void {
+        $company = $this->em->getRepository(Companies::class)->findBy(['id' => 4]);
+        
+        $this->assertNotEmpty($company);
+        $this->assertIsArray($company);
+        $this->assertInstanceOf(Companies::class, $company[0]);
+        $this->assertEquals($company[0]->getId(), 4);
+    }
 
     protected function tearDown(): void
     {
@@ -48,34 +46,34 @@ class CompaniesTest extends KernelTestCase
     }
 }
 
-// class Companies1Test extends TypeTestCase
-// {
-//     public function testCreateCompany(): void {
-//         $formData = [
-//             'type' => 1,
-//             'cif' => 'V49245699',
-//             'name' => 'MANOR',
-//         ];
+class Companies1Test extends TypeTestCase
+{
+    public function testCreateCompany(): void {
+        $formData = [
+            'type' => 1,
+            'cif' => 'V49245699',
+            'name' => 'MANOR',
+        ];
 
-//         $model = new Companies();
+        $model = new Companies();
 
-//         $expected = (new Companies())
-//             ->setType(1)
-//             ->setCif('V49245699')
-//             ->setName('MANOR')
-//             ->setDischargeDate($model->getDischargeDate());
+        $expected = (new Companies())
+            ->setType(1)
+            ->setCif('V49245699')
+            ->setName('MANOR')
+            ->setCreatedAt($model->getCreatedAt());
 
-//         $form = $this->factory->create(CompanyType::class, $model);
-//         $form->submit($formData);
+        $form = $this->factory->create(CompanyType::class, $model);
+        $form->submit($formData);
 
-//         $this->assertTrue($form->isSynchronized());
-//         $this->assertEquals($expected, $model);
+        $this->assertTrue($form->isSynchronized());
+        $this->assertEquals($expected, $model);
 
-//         $view = $form->createView();
-//         $children = $view->children;
+        $view = $form->createView();
+        $children = $view->children;
 
-//         foreach (array_keys($formData) as $key) {
-//             $this->assertArrayHasKey($key, $children);
-//         }
-//     }
-// }
+        foreach (array_keys($formData) as $key) {
+            $this->assertArrayHasKey($key, $children);
+        }
+    }
+}

@@ -186,6 +186,13 @@
         <argument type="service" id=".service_locator.VggPhve.App\Controller\CompanyController"/>
       </call>
     </service>
+    <service id="App\Controller\CountryController" class="App\Controller\CountryController" public="true" autowire="true" autoconfigure="true">
+      <tag name="controller.service_arguments"/>
+      <tag name="container.service_subscriber"/>
+      <call method="setContainer">
+        <argument type="service" id=".service_locator.jUv.zyj.App\Controller\CountryController"/>
+      </call>
+    </service>
     <service id="App\Form\Type\CompanyType" class="App\Form\Type\CompanyType" autowire="true" autoconfigure="true">
       <tag name="form.type"/>
     </service>
@@ -3111,6 +3118,9 @@
     <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\CompanyController" class="App\Controller\CompanyController" autowire="true" abstract="true"/>
     <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\CompanyController" class="App\Controller\CompanyController" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Controller\CompanyController" class="App\Controller\CompanyController" autowire="true" autoconfigure="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Contracts\Service\ServiceSubscriberInterface.0.App\Controller\CountryController" class="App\Controller\CountryController" autowire="true" abstract="true"/>
+    <service id=".instanceof.Symfony\Bundle\FrameworkBundle\Controller\AbstractController.0.App\Controller\CountryController" class="App\Controller\CountryController" autowire="true" abstract="true"/>
+    <service id=".abstract.instanceof.App\Controller\CountryController" class="App\Controller\CountryController" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Symfony\Component\Form\FormTypeInterface.0.App\Form\Type\CompanyType" class="App\Form\Type\CompanyType" autowire="true" abstract="true"/>
     <service id=".abstract.instanceof.App\Form\Type\CompanyType" class="App\Form\Type\CompanyType" autowire="true" autoconfigure="true" abstract="true"/>
     <service id=".instanceof.Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepositoryInterface.0.App\Repository\CompaniesRepository" class="App\Repository\CompaniesRepository" autowire="true" abstract="true"/>
@@ -3707,6 +3717,23 @@
       <argument type="service" id="service_container"/>
       <factory service=".service_locator.VggPhve" method="withContext"/>
     </service>
+    <service id=".service_locator.jUv.zyj" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="form.factory" type="service_closure" id="form.factory" on-invalid="ignore"/>
+        <argument key="http_kernel" type="service_closure" id="http_kernel" on-invalid="ignore"/>
+        <argument key="parameter_bag" type="service_closure" id="parameter_bag" on-invalid="ignore"/>
+        <argument key="request_stack" type="service_closure" id="request_stack" on-invalid="ignore"/>
+        <argument key="router" type="service_closure" id="router.default" on-invalid="ignore"/>
+        <argument key="serializer" type="service_closure" id="serializer" on-invalid="ignore"/>
+      </argument>
+    </service>
+    <service id=".service_locator.jUv.zyj.App\Controller\CountryController" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator_context" id="App\Controller\CountryController"/>
+      <argument>App\Controller\CountryController</argument>
+      <argument type="service" id="service_container"/>
+      <factory service=".service_locator.jUv.zyj" method="withContext"/>
+    </service>
     <service id=".service_locator.PvoQzFT" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -3797,6 +3824,7 @@
         <argument type="collection">
           <argument>App\Kernel</argument>
           <argument>App\Controller\CompanyController</argument>
+          <argument>App\Controller\CountryController</argument>
           <argument>Doctrine\Bundle\DoctrineBundle\Controller\ProfilerController</argument>
         </argument>
       </call>
@@ -4584,5 +4612,6 @@
     <service id=".service_locator.gFlme_s" alias=".service_locator.y4_Zrx."/>
     <service id=".service_locator.vf3O4kY" alias=".service_locator.MEa3gue"/>
     <service id=".service_locator.UI6mvAa" alias=".service_locator.VggPhve"/>
+    <service id=".service_locator.P64Obqg" alias=".service_locator.jUv.zyj"/>
   </services>
 </container>
