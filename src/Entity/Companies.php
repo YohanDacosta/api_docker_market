@@ -40,6 +40,10 @@ class Companies
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updated_at= null;
 
+    #[ORM\ManyToOne(inversedBy: 'companies')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Countries $country = null;
+
     public function __construct()
     {
         $this->created_at = new \DateTime();
@@ -107,6 +111,18 @@ class Companies
     public function setUpdatedAt(\DateTimeInterface $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getCountry(): ?Countries
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?Countries $country): static
+    {
+        $this->country = $country;
 
         return $this;
     }

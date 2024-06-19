@@ -3,6 +3,8 @@
 namespace App\Form\Type;
 
 use App\Entity\Companies;
+use App\Entity\Countries;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -50,6 +52,16 @@ class CompanyType extends AbstractType
                 new Assert\NotBlank([
                     'message' => "The field {{ label }} is required!",
                 ]),
+            ]
+        ])
+            ->add('country', EntityType::class, [
+            'class' => Countries::class,
+            'choice_label' => 'id',
+            'required' => true,
+            'constraints'=> [
+                new Assert\NotBlank([
+                    'message' => "The field {{ label }} is required!",
+                ])
             ]
         ]);
     }
