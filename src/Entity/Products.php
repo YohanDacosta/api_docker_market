@@ -3,8 +3,10 @@
 namespace App\Entity;
 
 use App\Repository\ProductsRepository;
+use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProductsRepository::class)]
 class Products
@@ -12,34 +14,49 @@ class Products
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['product:read'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['product:read', 'product:write'])]
     private ?int $company_id = null;
 
     #[ORM\Column(length: 25)]
+    #[Groups(['product:read', 'product:write'])]
     private ?string $name = null;
 
     #[ORM\Column]
+    #[Groups(['product:read', 'product:write'])]
     private ?int $type_product = null;
 
     #[ORM\Column]
+    #[Groups(['product:read', 'product:write'])]
     private ?int $country_id = null;
 
     #[ORM\Column]
+    #[Groups(['product:read', 'product:write'])]
     private ?bool $imported = null;
 
     #[ORM\Column]
+    #[Groups(['product:read', 'product:write'])]
     private ?int $quantity = null;
 
     #[ORM\Column]
+    #[Groups(['product:read', 'product:write'])]
     private ?bool $caducated = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['product:read', 'product:write'])]
     private ?string $photo = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $discharge_date = null;
+    #[Groups(['product:read'])]
+    private ?\DateTimeInterface $created_at = null;
+
+    public function __construct()
+    {
+        $this->created_at = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -144,12 +161,12 @@ class Products
 
     public function getDischargeDate(): ?\DateTimeInterface
     {
-        return $this->discharge_date;
+        return $this->created_at;
     }
 
-    public function setDischargeDate(\DateTimeInterface $discharge_date): static
+    public function setDischargeDate(\DateTimeInterface $created_at): static
     {
-        $this->discharge_date = $discharge_date;
+        $this->created_at = $created_at;
 
         return $this;
     }
