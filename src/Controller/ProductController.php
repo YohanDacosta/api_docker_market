@@ -14,6 +14,8 @@ use Symfony\Component\HttpFoundation\Response;
 #[Route('/api', name:'api_')]
 class ProductController extends AbstractController
 {
+    public const ERROR_COMPANY_NOT_FOUND = 'Company not found!';
+
     private $em;
     private $serializer;
 
@@ -31,6 +33,22 @@ class ProductController extends AbstractController
         $context = new Context();
         $context->setGroups(['groups' => 'product:read']);
         $data = $this->serializer->serialize($companies, 'json', $context);
+
+        return new JsonResponse(['errors' => false, 'data' => json_decode($data)], Response::HTTP_OK, [], false);
+    }
+
+    #[Route('/product/{id}', name: 'get_product', methods: 'GET')]
+    public function getCompany(int $id): JsonResponse
+    {
+        $company = $this->em->getRepository(Products::class)->findBy(['id' => $id]);
+
+        if (!$company) {
+            return new JsonResponse(['errors' => true, 'message' => self::ERROR_COMPANY_NOT_FOUND], Response::HTTP_NOT_FOUND, [], false);
+        }
+
+        $context = new Context();
+        $context->setGroups(['product:read']);
+        $data = $this->serializer->serialize($company, 'json', $context);
 
         return new JsonResponse(['errors' => false, 'data' => json_decode($data)], Response::HTTP_OK, [], false);
     }
