@@ -2,18 +2,17 @@
 
 namespace App\Controller;
 
+use App\Helper\Helper;
 use App\Entity\Companies;
 use App\Form\Type\CompanyType;
-use Doctrine\ORM\EntityManagerInterface;
 use FOS\RestBundle\Context\Context;
-use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Serializer\Serializer;
-use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Serializer\Encoder\JsonDecode;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Doctrine\ORM\EntityManagerInterface;
 
 #[Route('/api', name:'api_')]
 class CompanyController extends AbstractFOSRestController
@@ -26,15 +25,6 @@ class CompanyController extends AbstractFOSRestController
 
     private $serializer;
     private $em;
-    
-    private function getFormErrors(FormInterface $form): array
-    {
-        $errors = [];
-        foreach ($form->getErrors(true) as $error) {
-            $errors[] = $error->getMessage();
-        }
-        return $errors;
-    }
 
     public function __construct(EntityManagerInterface $em, Serializer $serializer)
     {
@@ -43,7 +33,7 @@ class CompanyController extends AbstractFOSRestController
     }   
 
     #[Route('/companies', name: 'get_companies', methods: 'GET')]
-    public function getCompanies(): JsonResponse
+    public function all(): JsonResponse
     {
         $companies = $this->em->getRepository(Companies::class)->findAll();
         $context = new Context();
@@ -54,7 +44,7 @@ class CompanyController extends AbstractFOSRestController
     }
 
     #[Route('/company/{id}', name: 'get_company', methods: 'GET')]
-    public function getCompany(int $id): JsonResponse
+    public function get(int $id): JsonResponse
     {
         $company = $this->em->getRepository(Companies::class)->findBy(['id' => $id]);
 
@@ -68,8 +58,8 @@ class CompanyController extends AbstractFOSRestController
         return new JsonResponse(['errors' => false, 'data' => json_decode($data)], Response::HTTP_OK, [], false);
     }
 
-    #[Route('/company-create', name: 'create_company', methods: 'POST')]
-    public function createCompany(Request $request): JsonResponse
+    #[Route('/company/add', name: 'add_company', methods: 'POST')]
+    public function add(Request $request): JsonResponse
     {
         $company = new Companies();
         $form = $this->createForm(CompanyType::class, $company, ['required' => false]);
@@ -86,12 +76,14 @@ class CompanyController extends AbstractFOSRestController
             
             return new JsonResponse(['errors' => false, 'message' => self::COMPANY_CREATED], Response::HTTP_CREATED, [], false);
         }
-        $errors = $this->getFormErrors($form);
 
-        return new JsonResponse(['errors' => $errors, 'data' => []], Response::HTTP_BAD_REQUEST);
+        $helper = new Helper();
+        $errors = $helper->getFormErrors($form);
+
+        return new JsonResponse(['errors' => true, 'message' => $errors], Response::HTTP_BAD_REQUEST, [], false);
     }
 
-    #[Route('/company-edit', name: 'edit_company', methods: 'PUT')]
+    #[Route('/company/edit', name: 'edit_company', methods: 'PUT')]
     public function editCompany(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -120,12 +112,14 @@ class CompanyController extends AbstractFOSRestController
             $this->em->flush();  
             return new JsonResponse(['errors' => false, 'message' => self::COMPANY_EDITED], Response::HTTP_CREATED, [], false);
         }
-        $errors = $this->getFormErrors($form);
+
+        $helper = new Helper();
+        $errors = $helper->getFormErrors($form);
 
         return new JsonResponse(['errors' => true, 'message' => $errors], Response::HTTP_BAD_REQUEST, [], false);
     }
 
-    #[Route('/company-delete', name: 'company_delete', methods: 'POST')]
+    #[Route('/company/delete', name: 'delete_company', methods: 'POST')]
     public function deleteCompany(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent(), true);

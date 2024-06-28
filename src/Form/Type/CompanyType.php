@@ -18,39 +18,42 @@ class CompanyType extends AbstractType
     {
         $builder
             ->add('id', IntegerType::class, [
-            'required'   => $options['required'],
-            'constraints'=> [
-                new Assert\Type(
-                    type: 'integer',
-                    message: 'The value {{ value }} is not a valid {{ type }}.',
-                )
-            ]
+            'required' => $options['required'],
+            'constraints' => [
+                new Assert\Type([
+                    'type' => 'integer',
+                    'message' => 'The value {{ value }} is not a valid {{ type }}.',
+                ])
+                ],
+                'invalid_message' => 'The value {{ value }} is not a valid integer.',
         ])
             ->add('type', IntegerType::class, [
-            'required'   => true,
-            'constraints'=> [
+            'required' => true,
+            'constraints' => [
                 new Assert\NotBlank([
-                    'message' => "The field {{ label }} is required!",
+                    'message' => "The field {{ label }} is required.",
                 ]),
-                new Assert\Type(
-                    type: 'integer',
-                    message: 'The value {{ value }} is not a valid {{ type }}.',
-                )
-            ]
+                new Assert\Type([
+                    'type' => 'integer',
+                    'message' => 'The value {{ value }} is not a valid {{ type }}.',
+                ]),
+            ],
+            'invalid_message' => 'The value {{ value }} is not a valid integer.',
+
         ])
             ->add('cif', TextType::class, [
-            'required'   => true,
-            'constraints'=> [
+            'required' => true,
+            'constraints' => [
                 new Assert\NotBlank([
-                    'message' => "The field {{ label }} is required!",
+                    'message' => "The field {{ label }} is required.",
                 ]),
             ]
         ])
             ->add('name', TextType::class, [
-            'required'   => true,   
-            'constraints'=> [
+            'required' => true,   
+            'constraints' => [
                 new Assert\NotBlank([
-                    'message' => "The field {{ label }} is required!",
+                    'message' => "The field {{ label }} is required.",
                 ]),
             ]
         ])
@@ -58,9 +61,9 @@ class CompanyType extends AbstractType
             'class' => Countries::class,
             'choice_label' => 'id',
             'required' => true,
-            'constraints'=> [
+            'constraints' => [
                 new Assert\NotBlank([
-                    'message' => "The field {{ label }} is required!",
+                    'message' => "The field {{ label }} is required.",
                 ])
             ]
         ]);
@@ -70,7 +73,6 @@ class CompanyType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Companies::class,
-            'csrf_protection' => false
         ]);
     }
 }
