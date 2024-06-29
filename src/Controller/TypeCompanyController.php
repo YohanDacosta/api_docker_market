@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/api', name: 'api_')]
 class TypeCompanyController extends AbstractController
 {
-    public const ERROR_COMPANY_NOT_FOUND = 'Company not found!';
+    public const ERROR_TYPE_COMPANY_NOT_FOUND = 'Type Company not found!';
 
     private $em;
     private $serialier;
@@ -45,7 +45,7 @@ class TypeCompanyController extends AbstractController
         $type_company = $this->em->getRepository(TypeCompany::class)->findOneBy(['id' =>$id]);
 
         if (!$type_company) {
-            return new JsonResponse(['errors' => true, 'message' => self::ERROR_COMPANY_NOT_FOUND], Response::HTTP_NOT_FOUND, [], false);
+            return new JsonResponse(['errors' => true, 'message' => self::ERROR_TYPE_COMPANY_NOT_FOUND], Response::HTTP_NOT_FOUND, [], false);
         }
         $context = new Context();
         $context->setGroups(['type_company:read']);

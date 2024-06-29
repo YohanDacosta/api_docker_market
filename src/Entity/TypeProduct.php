@@ -2,8 +2,9 @@
 
 namespace App\Entity;
 
-use App\Repository\TypeProductRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\TypeProductRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: TypeProductRepository::class)]
 class TypeProduct
@@ -11,9 +12,11 @@ class TypeProduct
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['type_product:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 50)]
+    #[Groups(['type_product:read', 'type_product:write'])]
     private ?string $description = null;
 
     public function getId(): ?int
