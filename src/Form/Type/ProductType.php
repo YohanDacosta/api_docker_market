@@ -17,7 +17,19 @@ class ProductType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        $isEdit = $options['is_edit'];
+
         $builder
+            ->add('id', IntegerType::class, [
+            'required' => $options['required'],
+            'constraints' => [
+                new Assert\Type([
+                    'type' => 'integer',
+                    'message' => 'The value {{ value }} is not a valid {{ type }}.',
+                ])
+                ],
+                'invalid_message' => 'The value {{ value }} is not a valid integer.',
+            ])
             ->add('company_id', IntegerType::class, [ 
                 'required' => true, 
                 'constraints' => [
@@ -33,6 +45,7 @@ class ProductType extends AbstractType
             ])
             ->add('name', TextType::class, [
                 'required' => true,
+                'disabled' => $isEdit,
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => "The field {{ label }} is required.",
@@ -99,6 +112,7 @@ class ProductType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Products::class,
+            'is_edit' => false,
         ]);
     }
 }

@@ -26,7 +26,7 @@ class Products
     #[Groups(['product:read', 'product:write'])]
     private ?int $company_id = null;
 
-    #[ORM\Column(length: 25)]
+    #[ORM\Column(length: 25, unique: true)]
     #[Groups(['product:read', 'product:write'])]
     private ?string $name = null;
 

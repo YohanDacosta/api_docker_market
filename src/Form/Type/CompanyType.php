@@ -4,18 +4,20 @@ namespace App\Form\Type;
 
 use App\Entity\Companies;
 use App\Entity\Countries;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 class CompanyType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $isEdit = $options['is_edit'];
+
         $builder
             ->add('id', IntegerType::class, [
             'required' => $options['required'],
@@ -43,6 +45,7 @@ class CompanyType extends AbstractType
         ])
             ->add('cif', TextType::class, [
             'required' => true,
+            'disabled' => $isEdit,
             'constraints' => [
                 new Assert\NotBlank([
                     'message' => "The field {{ label }} is required.",
@@ -73,6 +76,7 @@ class CompanyType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Companies::class,
+            'is_edit' => false,
         ]);
     }
 }
