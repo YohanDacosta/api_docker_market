@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Companies;
 use App\Repository\CountriesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,15 +15,15 @@ class Countries
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['country:read'])]
+    #[Groups(['country:read', 'company:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 2)]
-    #[Groups(['country:read', 'country:write'])]
+    #[Groups(['country:read', 'country:write', 'company:read'])]
     private ?string $iso = null;
 
     #[ORM\Column(length: 80)]
-    #[Groups(['country:read', 'country:write'])]
+    #[Groups(['country:read', 'country:write', 'company:read'])]
     private ?string $name = null;
 
     /**

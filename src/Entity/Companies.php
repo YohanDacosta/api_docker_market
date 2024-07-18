@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CompaniesRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Countries;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -40,8 +41,9 @@ class Companies
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updated_at= null;
 
-    #[ORM\ManyToOne(inversedBy: 'companies')]
+    #[ORM\ManyToOne(targetEntity: Countries::class, inversedBy: 'companies')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['company:read', 'company:write'])]
     private ?Countries $country = null;
 
     public function __construct()
