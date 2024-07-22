@@ -4,6 +4,7 @@ namespace App\Form\Type;
 
 use App\Entity\Companies;
 use App\Entity\Countries;
+use App\Entity\TypeCompany;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,19 +30,15 @@ class CompanyType extends AbstractType
                 ],
                 'invalid_message' => 'The value {{ value }} is not a valid integer.',
         ])
-            ->add('type', IntegerType::class, [
+            ->add('type', EntityType::class, [
+            'class' => TypeCompany::class,
+            'choice_label' => 'Type Company',
             'required' => true,
             'constraints' => [
                 new Assert\NotBlank([
                     'message' => "The field {{ label }} is required.",
-                ]),
-                new Assert\Type([
-                    'type' => 'integer',
-                    'message' => 'The value {{ value }} is not a valid {{ type }}.',
-                ]),
-            ],
-            'invalid_message' => 'The value {{ value }} is not a valid integer.',
-
+                ])
+            ]
         ])
             ->add('cif', TextType::class, [
             'required' => true,

@@ -63,7 +63,7 @@ class TypeCompany
     {
         if (!$this->companies->contains($company)) {
             $this->companies->add($company);
-            $company->setTypeId($this);
+            $company->setType($this);
         }
 
         return $this;
@@ -73,8 +73,8 @@ class TypeCompany
     {
         if ($this->companies->removeElement($company)) {
             // set the owning side to null (unless already changed)
-            if ($company->getTypeId() === $this) {
-                $company->setTypeId(null);
+            if ($company->getType() === $this) {
+                $company->setType(null);
             }
         }
 

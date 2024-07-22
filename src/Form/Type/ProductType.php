@@ -3,6 +3,10 @@
 namespace App\Form\Type;
 
 use App\Entity\Products;
+use App\Entity\Countries;
+use App\Entity\Companies;
+use App\Entity\TypeProduct;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -30,18 +34,17 @@ class ProductType extends AbstractType
                 ],
                 'invalid_message' => 'The value {{ value }} is not a valid integer.',
             ])
-            ->add('company_id', IntegerType::class, [ 
-                'required' => true, 
+            ->add('company', EntityType::class, [ 
+                'class' => Companies::class, 
+                'choice_label' => 'company',
+                'multiple' => true,
+                'expanded' => false,
+                'required' => true,
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => "The field {{ label }} is required.",
-                    ]),
-                    new Assert\Type([
-                        'type' => 'integer',
-                        'message' => "The value {{ value }} is not a valid {{ type }}.",
-                    ]),
-                ],
-                'invalid_message' => 'The value {{ value }} is not a valid integer.',
+                    ])
+                ]
             ])
             ->add('name', TextType::class, [
                 'required' => true,
@@ -52,31 +55,21 @@ class ProductType extends AbstractType
                     ]),
                 ]
             ])
-            ->add('type_product', IntegerType::class, [
+            ->add('type_product', EntityType::class, [
+                'class' => TypeProduct::class,
+                'choice_label' => 'Type Product',
                 'required' => true,
                 'constraints' => [
                     new Assert\NotBlank([
                         'message' => "The field {{ label }} is required.",
-                    ]),
-                    new Assert\Type([
-                        'type' => 'integer',
-                        'message' => "The value {{ value }} is not a valid {{ type }}.",
-                    ]),
-                ],
-                'invalid_message' => 'The value {{ value }} is not a valid integer.',
+                    ])
+                ]
             ])
-            ->add('country_id', IntegerType::class, [
-                'required' => true,
-                'constraints' => [
-                    new Assert\NotBlank([
-                        'message' => "The field {{ label }} is required.",
-                    ]),
-                    new Assert\Type([
-                        'type' => 'integer',
-                        'message' => "The value {{ value }} is not a valid {{ type }}.",
-                    ]),
-                ],
-                'invalid_message' => 'The value {{ value }} is not a valid integer.',
+            ->add('country', EntityType::class, [
+                'class' => Countries::class,
+                'choice_label' => 'country',
+                'multiple' => true,
+                'expanded' => false,
             ])
             ->add('imported', ChoiceType::class, [
                 'required' => true, 
