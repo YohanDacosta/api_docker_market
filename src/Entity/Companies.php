@@ -22,9 +22,10 @@ class Companies
     #[Groups(['company:read'])]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\ManyToOne(targetEntity: TypeCompany::class, inversedBy: 'companies')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['company:read', 'company:write'])]
-    private ?int $type = null;
+    private ?TypeCompany $type = null;
 
     #[ORM\Column(length: 25, unique: true)]
     #[Groups(['company:read', 'company:write'])]
@@ -57,12 +58,12 @@ class Companies
         return $this->id;
     }
 
-    public function getType(): ?int
+    public function getType(): ?TypeCompany
     {
         return $this->type;
     }
 
-    public function setType(int $type): static
+    public function setType(?TypeCompany $type): static
     {
         $this->type = $type;
 
