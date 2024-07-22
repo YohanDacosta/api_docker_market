@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ProductsRepository;
@@ -22,21 +24,28 @@ class Products
     #[Groups(['product:read'])]
     private ?int $id = null;
 
-    #[ORM\Column]
+    /**
+     * @var Collection<int, Companies>
+     */
+    #[ORM\ManyToMany(targetEntity: Companies::class, inversedBy: 'products')]
     #[Groups(['product:read', 'product:write'])]
-    private ?int $company_id = null;
+    private Collection $company;
 
     #[ORM\Column(length: 25, unique: true)]
     #[Groups(['product:read', 'product:write'])]
     private ?string $name = null;
 
-    #[ORM\Column]
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
     #[Groups(['product:read', 'product:write'])]
-    private ?int $type_product = null;
+    private ?TypeProduct $type_product = null;
 
-    #[ORM\Column]
+    /**
+     * @var Collection<int, Countries>
+     */
+    #[ORM\ManyToMany(targetEntity: Countries::class, inversedBy: 'products')]
     #[Groups(['product:read', 'product:write'])]
-    private ?int $country_id = null;
+    private Collection $country;
 
     #[ORM\Column]
     #[Groups(['product:read', 'product:write'])]
@@ -61,23 +70,13 @@ class Products
     public function __construct()
     {
         $this->created_at = new \DateTime();
+        $this->company = new ArrayCollection();
+        $this->country = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCompanyId(): ?int
-    {
-        return $this->company_id;
-    }
-
-    public function setCompanyId(int $company_id): static
-    {
-        $this->company_id = $company_id;
-
-        return $this;
     }
 
     public function getName(): ?string
@@ -92,26 +91,14 @@ class Products
         return $this;
     }
 
-    public function getTypeProduct(): ?int
+    public function getTypeProduct(): ?TypeProduct
     {
         return $this->type_product;
     }
 
-    public function setTypeProduct(int $type_product): static
+    public function setTypeProduct(?TypeProduct $type_product): static
     {
         $this->type_product = $type_product;
-
-        return $this;
-    }
-
-    public function getCountryId(): ?int
-    {
-        return $this->country_id;
-    }
-
-    public function setCountryId(int $country_id): static
-    {
-        $this->country_id = $country_id;
 
         return $this;
     }
@@ -172,6 +159,54 @@ class Products
     public function setDischargeDate(\DateTimeInterface $created_at): static
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Companies>
+     */
+    public function getCompany(): Collection
+    {
+        return $this->company;
+    }
+
+    public function addCompany(Companies $company): static
+    {
+        if (!$this->company->contains($company)) {
+            $this->company->add($company);
+        }
+
+        return $this;
+    }
+
+    public function removeCompany(Companies $company): static
+    {
+        $this->company->removeElement($company);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Countries>
+     */
+    public function getCountry(): Collection
+    {
+        return $this->country;
+    }
+
+    public function addCountry(Countries $country): static
+    {
+        if (!$this->country->contains($country)) {
+            $this->country->add($country);
+        }
+
+        return $this;
+    }
+
+    public function removeCountry(Countries $country): static
+    {
+        $this->country->removeElement($country);
 
         return $this;
     }

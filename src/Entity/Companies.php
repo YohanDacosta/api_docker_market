@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\CompaniesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Countries;
@@ -19,7 +21,7 @@ class Companies
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['company:read'])]
+    #[Groups(['company:read', 'product:read', 'product:write'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: TypeCompany::class, inversedBy: 'companies')]
@@ -28,11 +30,11 @@ class Companies
     private ?TypeCompany $type = null;
 
     #[ORM\Column(length: 25, unique: true)]
-    #[Groups(['company:read', 'company:write'])]
+    #[Groups(['company:read', 'company:write', 'product:read'])]
     private ?string $cif = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['company:read'])]
+    #[Groups(['company:read', 'product:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -47,10 +49,17 @@ class Companies
     #[Groups(['company:read', 'company:write'])]
     private ?Countries $country = null;
 
+    /**
+     * @var Collection<int, Products>
+     */
+    #[ORM\ManyToMany(targetEntity: Products::class, mappedBy: 'company')]
+    private Collection $products;
+
     public function __construct()
     {
         $this->created_at = new \DateTime();
         $this->updated_at = new \DateTime();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,6 +135,33 @@ class Companies
     public function setCountry(?Countries $country): static
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Products>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Products $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->addCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Products $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            $product->removeCompany($this);
+        }
 
         return $this;
     }

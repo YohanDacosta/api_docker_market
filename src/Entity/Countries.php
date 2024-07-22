@@ -15,15 +15,15 @@ class Countries
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['country:read', 'company:read'])]
+    #[Groups(['country:read', 'company:read', 'product:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 2)]
-    #[Groups(['country:read', 'country:write', 'company:read'])]
+    #[Groups(['country:read', 'country:write', 'company:read', 'product:read'])]
     private ?string $iso = null;
 
     #[ORM\Column(length: 80)]
-    #[Groups(['country:read', 'country:write', 'company:read'])]
+    #[Groups(['country:read', 'country:write', 'company:read', 'product:read'])]
     private ?string $name = null;
 
     /**
@@ -32,9 +32,16 @@ class Countries
     #[ORM\OneToMany(targetEntity: Companies::class, mappedBy: 'country')]
     private Collection $companies;
 
+    /**
+     * @var Collection<int, Products>
+     */
+    #[ORM\ManyToMany(targetEntity: Products::class, mappedBy: 'country')]
+    private Collection $products;
+
     public function __construct()
     {
         $this->companies = new ArrayCollection();
+        $this->products = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -91,6 +98,33 @@ class Countries
             if ($company->getCountry() === $this) {
                 $company->setCountry(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Products>
+     */
+    public function getProducts(): Collection
+    {
+        return $this->products;
+    }
+
+    public function addProduct(Products $product): static
+    {
+        if (!$this->products->contains($product)) {
+            $this->products->add($product);
+            $product->addCountry($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProduct(Products $product): static
+    {
+        if ($this->products->removeElement($product)) {
+            $product->removeCountry($this);
         }
 
         return $this;
