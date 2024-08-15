@@ -25,6 +25,18 @@ class CountryController extends AbstractFOSRestController
         $this->serializer = $serializer;
     }
 
+    #GET ALL COUNTRIES
+    #[Route('/countries', name: 'get_countries', methods: 'GET')]
+    public function all(): JsonResponse
+    {
+        $countries = $this->em->getRepository(Countries::class)->findAll();
+        $context = new Context();
+        $context->setGroups(['groups' => 'country:read']);
+        $data = $this->serializer->serialize($countries, 'json', $context);
+
+        return new JsonResponse(['errors' => false, 'data' => json_decode($data)], Response::HTTP_OK, [], false);
+    }
+
     #[Route('/country/{id}', name: 'get_country', methods: 'GET')]
     public function index(int $id): JsonResponse
     {
