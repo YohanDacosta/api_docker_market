@@ -49,7 +49,7 @@ class Products
 
     #[ORM\Column]
     #[Groups(['product:read', 'product:write'])]
-    private ?bool $imported = null;
+    private bool $imported = false;
 
     #[ORM\Column]
     #[Groups(['product:read', 'product:write'])]
@@ -57,7 +57,7 @@ class Products
 
     #[ORM\Column]
     #[Groups(['product:read', 'product:write'])]
-    private ?bool $caducated = null;
+    private bool $caducated = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['product:read', 'product:write'])]
@@ -127,7 +127,7 @@ class Products
         return $this;
     }
 
-    public function isCaducated(): ?bool
+    public function isCaducated(): bool
     {
         return $this->caducated;
     }

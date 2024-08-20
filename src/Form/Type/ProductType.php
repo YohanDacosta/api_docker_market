@@ -10,7 +10,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -22,7 +21,7 @@ class ProductType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $isEdit = $options['is_edit'];
-
+        
         $builder
             ->add('id', IntegerType::class, [
             'required' => $options['required'],
@@ -73,7 +72,14 @@ class ProductType extends AbstractType
             ])
             ->add('imported', ChoiceType::class, [
                 'required' => true, 
-                'choices' => ['Yes' => true, 'No' => false],
+                'choices' => [
+                    'Yes' => true, 
+                    'No' => false
+                ],
+                'empty_data' => false,
+                'choice_value' => function($choice) {
+                    return is_bool($choice) ? (string) (int) $choice : $choice;
+                },
                 'constraints' => [
                     new Assert\NotNull([
                         'message' => "The field {{ label }} is required.",
@@ -90,14 +96,21 @@ class ProductType extends AbstractType
             ])
             ->add('caducated', ChoiceType::class, [
                 'required'=> true, 
-                'choices' => ['Yes' => true, 'No' => false],
+                'choices' => [
+                    'Yes' => true, 
+                    'No' => false,
+                ],
+                'empty_data' => false,
+                'choice_value' => function($choice) {
+                    return is_bool($choice) ? (string) (int) $choice : $choice;
+                },
                 'constraints' => [
                     new Assert\NotNull([
                         'message' => "The field {{ label }} is required.",
                     ]),
                 ]
             ])
-            ->add('photo', FileType::class, ['required' => false, 'label' => 'Upload Image'])
+            ->add('photo', TextType::class, ['required' => false, 'label' => 'Upload Image'])
         ;
     }
 
