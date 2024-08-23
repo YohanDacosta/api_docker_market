@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/api', name:'api_')]
 class ProductController extends AbstractController
@@ -25,11 +27,13 @@ class ProductController extends AbstractController
 
     private $em;
     private $serializer;
+    private $slugger;
 
-    public function __construct(EntityManagerInterface $entityManager, Serializer $serializer)
+    public function __construct(EntityManagerInterface $entityManager, Serializer $serializer, SluggerInterface $slugger)
     {
         $this->em = $entityManager;
         $this->serializer = $serializer;
+        $this->slugger = $slugger;
     }
 
     #GET ALL PRODUCTS
@@ -69,10 +73,29 @@ class ProductController extends AbstractController
         if ($request->isMethod('POST')) {
             $product = new Products();
             $form = $this->createForm(ProductType::class, $product);
-            $data = json_decode($request->getContent(), true);
+            $data = json_decode($request->request->get("data"), true);
             $form->submit($data);
     
             if ($form->isSubmitted() && $form->isValid()) {
+                $imageFile = $request->files->get('file');
+
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $this->slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('images_directory') . '/products/images',
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Failed to upload image');
+                    }
+
+                    $product->setPhoto('/uploads/products/images/' . $newFilename);
+                }
+
                 $this->em->persist($product);
                 $this->em->flush();
     
@@ -88,11 +111,12 @@ class ProductController extends AbstractController
     }
 
     #EDIT A PRODUCT BY ID
-    #[Route('/product/edit', name: 'edit_product', methods: 'PUT')]
+    #[Route('/product/edit', name: 'edit_product', methods: 'POST')]
     public function edit(Request $request): JsonResponse
     {
-        if ($request->isMethod('PUT')) {
-            $data = json_decode($request->getContent(), true);
+        if ($request->isMethod('POST')) {
+            $data = json_decode($request->request->get('data'), true);
+
             $id = $data['id'] ?? null;
     
             if (!$id) {
@@ -104,9 +128,33 @@ class ProductController extends AbstractController
                 return new JsonResponse(['errors' => true, 'message' => self::ERROR_PRODUCT_NOT_FOUND], Response::HTTP_NOT_FOUND, [], false);
             }
             $form = $this->createForm(ProductType::class, $product, ['is_edit' => true]);
+
+            if ($request->files->get('photo')) {
+                $data['photo'] = $request->files->get('photo');
+            }
+
             $form->submit($data);
 
             if ($form->isSubmitted() && $form->isValid()) {
+                $imageFile = $request->files->get('file');
+
+                if ($imageFile) {
+                    $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $this->slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+                    
+                    try {
+                        $imageFile->move(
+                            $this->getParameter('images_directory') . '/products/images',
+                            $newFilename
+                        );
+                    } catch (FileException $e) {
+                        $this->addFlash('error', 'Failed to upload image');
+                    }
+
+                    $product->setPhoto('/uploads/products/images/' . $newFilename);
+                }
+
                 $this->em->persist($product);
                 $this->em->flush();
 
@@ -124,7 +172,7 @@ class ProductController extends AbstractController
     public function delete(Request $request): JsonResponse
     {
         if ($request->isMethod('POST')) {
-            $data = json_decode($request->getContent(), true);
+            $data = json_decode($request->request->get('data'), true);
             $id = $data['id'] ?? null;
     
             if (!$id) {
