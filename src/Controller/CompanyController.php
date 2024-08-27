@@ -66,7 +66,7 @@ class CompanyController extends AbstractFOSRestController
     {
         $company = new Companies();
         $form = $this->createForm(CompanyType::class, $company, ['required' => false]);
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->request->get("data"), true);
         $form->submit($data);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -82,10 +82,10 @@ class CompanyController extends AbstractFOSRestController
     }
 
     #EDIT A COMPANY BY ID
-    #[Route('/company/edit', name: 'edit_company', methods: 'PUT')]
+    #[Route('/company/edit', name: 'edit_company', methods: 'POST')]
     public function edit(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->request->get("data"), true);
         $id = $data['id'] ?? null;
 
         if (!$id) {
@@ -116,7 +116,7 @@ class CompanyController extends AbstractFOSRestController
     #[Route('/company/delete', name: 'delete_company', methods: 'POST')]
     public function delete(Request $request): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->request->get('data'), true);
         $id = $data['id'] ?? null;
 
         if (!$id) {
@@ -127,8 +127,8 @@ class CompanyController extends AbstractFOSRestController
         if (!$company) {
             return new JsonResponse(['errors' => true, 'message' => self::ERROR_COMPANY_NOT_FOUND], Response::HTTP_NOT_FOUND, [], false);
         }
-        $this->em->remove($company);
-        $this->em->flush();
+        // $this->em->remove($company);
+        // $this->em->flush();
 
         return new JsonResponse(['errors' => false, 'message' => self::COMPANY_DELETED], Response::HTTP_OK, [], false);
     }

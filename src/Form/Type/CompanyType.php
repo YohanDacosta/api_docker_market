@@ -51,6 +51,7 @@ class CompanyType extends AbstractType
         ])
             ->add('name', TextType::class, [
             'required' => true,   
+            'empty_data' => '',
             'constraints' => [
                 new Assert\NotBlank([
                     'message' => "The field {{ label }} is required.",
